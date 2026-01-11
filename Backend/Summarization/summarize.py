@@ -1,5 +1,8 @@
 import os
 import mimetypes
+import re
+import logging
+import unicodedata
 
 # Text extraction libraries
 from docx import Document
@@ -59,15 +62,79 @@ def detect_and_extract(file_path):
     else:
         raise ValueError("Unsupported file type: " + ext)
 
+def clean_text(text):
+    # Remove control characters and non-printable characters
+    return ''.join(c for c in text if unicodedata.category(c)[0] != 'C')
+
+def split_text(text, max_length=4000):
+    # Split by paragraphs, then sentences if needed
+    paragraphs = re.split(r'\n{2,}', text)
+    chunks = []
+    current = ""
+    for para in paragraphs:
+        if len(current) + len(para) < max_length:
+            current += para + "\n\n"
+        else:
+            if current:
+                chunks.append(current.strip())
+            if len(para) < max_length:
+                current = para + "\n\n"
+            else:
+                # If a single paragraph is too long, split by sentences
+                sentences = re.split(r'(?<=[.!?]) +', para)
+                sent_chunk = ""
+                for sent in sentences:
+                    if len(sent_chunk) + len(sent) < max_length:
+                        sent_chunk += sent + " "
+                    else:
+                        chunks.append(sent_chunk.strip())
+                        sent_chunk = sent + " "
+                if sent_chunk:
+                    chunks.append(sent_chunk.strip())
+                current = ""
+    if current:
+        chunks.append(current.strip())
+    return chunks
+
 def summarize_abstractive(text):
-    # Defensive: Truncate to 4000 chars (model limit)
-    if not text.strip():
+    if not isinstance(text, str):
+        logging.error("Input is not a string.")
+        return "Input is not a string."
+    text = text.strip()
+    if not text:
+        logging.error("No text to summarize.")
         return "No text to summarize."
-    max_input_length = 4000  # chars, adjust as needed
-    if len(text) > max_input_length:
-        text = text[:max_input_length]
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0 if torch.cuda.is_available() else -1)
-    return summarizer(text, max_length=130, min_length=30, do_sample=False)[0]['summary_text']
+    max_input_length = 4000  # chars
+    chunks = split_text(text, max_input_length)
+    from transformers import pipeline
+    import torch
+    summarizer = pipeline("summarization", model="t5-large", device=0 if torch.cuda.is_available() else -1)
+    summaries = []
+    for i, chunk in enumerate(chunks):
+        chunk = chunk.strip()
+        chunk = clean_text(chunk)
+        logging.info(f"Chunk {i}: length={len(chunk)}; sample='{chunk[:100].replace(chr(10), ' ')}'")
+        if not chunk:
+            logging.warning(f"Chunk {i} is empty, skipping.")
+            continue
+        try:
+            summary = summarizer(chunk, max_length=60, min_length=20, do_sample=False)[0]['summary_text']
+            summaries.append(summary)
+        except Exception as e:
+            logging.error(f"Error summarizing chunk {i}: {e}")
+            summaries.append(f"Error: {e}")
+    # Optionally, summarize the summaries for a final summary
+    if len(summaries) > 1:
+        combined = " ".join(summaries)
+        try:
+            combined = clean_text(combined)
+            logging.info(f"Summarizing combined summary of length {len(combined)}")
+            final_summary = summarizer(combined, max_length=60, min_length=20, do_sample=False)[0]['summary_text']
+            return final_summary
+        except Exception as e:
+            logging.error(f"Error summarizing combined summary: {e}")
+            return " ".join(summaries)
+    return summaries[0] if summaries else "No summary generated."
 
 def summarize_extractive(text, sentence_count=3):
     parser = PlaintextParser.from_string(text, Tokenizer("english"))

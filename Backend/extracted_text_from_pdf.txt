@@ -1,12 +1,62 @@
-No. of credits recommended: 3 or 4
-To verify the certificate
-Roll No:
-Jan-Apr 2025
-(12 week course)
-Affective Computing
+SUMMARY
+PROJECTS
+EDUCATION
+PROGRAMMING LANGUAGES
+LANGUAGES
+www.linkedin.com/in/naveen2005kannan
+naveen2005kannan20@gmail.com
+6379067979
 NAVEEN KANNAN PERIYACHI
-23.91/25
-48.75/75
-73
-3396
-NPTEL25CS04S349000243
+AI Developer
+I'm a motivated AI developer with a solid background in Python, C, Java, and technologies like Machine
+Learning, OOP, and basic web development . I enjoy exploring new areas like Prompt Engineering and finding
+creative solutions to problems.
+.
+ ML models like Random Forest Classifier, Decision Tree
+Classifier, Naive Bayes Classifier and Logistic Regression
+is trained and with the help of Hyper parameter tuning its
+accuracy is increased.
+DL Built a deep learning model using InceptionV3 for
+image classification, leveraging data augmentation to
+improve generalization. Enhanced model performance
+through evaluation metrics and fine-tuning techniques to
+achieve higher accuracy.
+ B.Tech AI & DS - CGPA 8.61*, Currently
+pursuing Artificial Intelligence and Data
+Science 
+ Grade 12 - 84.4%
+Python
+Java
+C
+ HTML/CSS
+JavaScript
+English 
+Tamil
+Autism Spectrum Disorder Prediction :
+Achievements :
+Kongu Engineering College :
+The Navodaya Academy (CBSE):
+Leet Code : Naveen-Kannan-Periyachi
+The Navodaya Academy (CBSE):
+Grade 10 - 92.2%
+Techniical Skills
+Machine Learning
+OOPS
+Git
+Air Quality prediction : 
+ ML models like Random Forest Classifier, Decision
+Tree Classifier, KNN and AdaBoost is Implemented
+and with the help of Hyper parameter tuning its
+accuracy is increased.
+2nd Place in Paper presentation conducted by the AI
+Association at the Newels Competition, Kongu
+Engineering College,Sept 2024 
+GitHub : https://github.com/Naveen-Kannan-Periyachi
+Certifications
+Microsoft Certified: Azure AI Engineer Associate
+DocuVision Suite
+This project is an integrated document processing suite that
+enables users to extract, analyze, summarize, and translate
+text from images, PDFs, Excel files, and more. It features both
+a web-based frontend and a secure backend, supporting
+OCR, document analysis, summarization, translation.
